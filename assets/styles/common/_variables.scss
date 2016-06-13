@@ -1,0 +1,49 @@
+/*
+ * => FONT VARS
+ * ---------------------------------------------------------------------------*/
+
+
+// Mixin for rem font size and fallback
+@mixin font-size($sizeValue: 1) {
+  font-size: ($sizeValue * $font-size-base);
+  font-size: $sizeValue + rem;
+}
+
+// Usage - @include font-size(1);
+
+
+/*
+ * => COLOR VARS & MIXINS
+ * ---------------------------------------------------------------------------*/
+
+/* Set the main site colors here. This will be used to auto-generate classes elsewhere. */
+$mainColors: (
+	'white': #ffffff,
+	'black': #000000,
+	'orange':#ff6d00,
+  'lightorange': #f19330,
+	'blue':  #003399,       
+  'lightblue': #346bba,
+	'gray':  #7f7d7b,
+  'lightgray': #aaa7a5,
+  'green': #339933
+);
+
+// Usage - bacground-color: color('white');
+
+
+/*
+ * => BOOTSTRAP VARIABLES OVERRIDES
+ * ---------------------------------------------------------------------------*/
+
+// Glyphicons font path
+$icon-font-path:        "../fonts/";
+
+// Grid settings
+$main-sm-columns:       12;
+$sidebar-sm-columns:    4;
+
+// Colors
+$brand-primary:         #27ae60;
+
+$font-size-base:          16px;

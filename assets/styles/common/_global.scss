@@ -1,0 +1,18 @@
+/*
+ * => GLOBAL ELEMENTS STYLES
+ * ---------------------------------------------------------------------------*/
+
+html {
+  font-size: $font-size-base - 4;
+  -ms-text-size-adjust: $font-size-base - 4;
+  -webkit-text-size-adjust: auto;
+
+  @media (min-width: $screen-xs-min) {
+    font-size: $font-size-base - 2;
+	  -ms-text-size-adjust: $font-size-base - 2;
+  }
+  @media (min-width: $screen-sm-min) {
+    font-size: $font-size-base;
+	  -ms-text-size-adjust: $font-size-base;
+  }
+}
