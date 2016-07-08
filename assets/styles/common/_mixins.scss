@@ -1,0 +1,77 @@
+/*
+ * => FONT VARS
+ * ---------------------------------------------------------------------------*/
+
+
+// Mixin for rem font size and fallback
+@mixin font-size($sizeValue: 1) {
+  font-size: ($sizeValue * $font-size-base);
+  font-size: $sizeValue + rem;
+}
+
+// Usage - @include font-size(1);
+
+
+
+
+/*
+ * => PLACEHOLDER MIXIN
+ * ---------------------------------------------------------------------------*/
+
+
+@mixin placeholder {
+  &::-webkit-input-placeholder {@content}
+  &:-moz-placeholder           {@content}
+  &::-moz-placeholder          {@content}
+  &:-ms-input-placeholder      {@content}  
+}
+
+// Usage -
+// input {
+//   @include placeholder {
+//     color: green;
+//   }
+// }
+
+
+
+
+
+/*
+ * => MEDIA BREAKPOINTS (in 'include-media' bower package)
+ * ---------------------------------------------------------------------------*/
+
+// How to use: http://include-media.com/#features
+
+$breakpoints: (
+  phone: 532px,
+  tablet: 767px,
+  tabletwide: 1023px,
+  laptop: 1279px,
+  desktop: 1599px,
+);
+// usage: 
+
+// .something {
+//   width: 100%;
+
+//   @include media(">phone", "<=tablet") {
+//    width: 50%;
+//   }
+  
+// }
+
+
+
+/*
+ * => BROWSER SPECFIC
+ * ---------------------------------------------------------------------------*/
+
+
+@mixin browser($browsers: Mozilla) {
+  @each $browser in $browsers {
+    html[data-browser*="#{$browser}"] {
+      @content;
+    }
+  }
+}

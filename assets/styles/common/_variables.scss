@@ -1,18 +1,4 @@
 /*
- * => FONT VARS
- * ---------------------------------------------------------------------------*/
-
-
-// Mixin for rem font size and fallback
-@mixin font-size($sizeValue: 1) {
-  font-size: ($sizeValue * $font-size-base);
-  font-size: $sizeValue + rem;
-}
-
-// Usage - @include font-size(1);
-
-
-/*
  * => COLOR VARS & MIXINS
  * ---------------------------------------------------------------------------*/
 
@@ -28,6 +14,15 @@ $mainColors: (
   'lightgray': #aaa7a5,
   'green': #339933
 );
+
+// return color value from given key
+@function color($key) {
+  @if map-has-key($mainColors, $key) {
+    @return map-get($mainColors, $key);
+  }
+  @warn "Unknown `#{$key}` in $colors.";
+  @return null;
+}
 
 // Usage - bacground-color: color('white');
 
