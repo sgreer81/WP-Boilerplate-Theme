@@ -4,6 +4,7 @@ var autoprefixer = require('gulp-autoprefixer');
 var browserSync  = require('browser-sync').create();
 var changed      = require('gulp-changed');
 var concat       = require('gulp-concat');
+var favicons     = require('gulp-favicons');
 var flatten      = require('gulp-flatten');
 var gulp         = require('gulp');
 var gulpif       = require('gulp-if');
@@ -66,6 +67,12 @@ var enabled = {
 
 // Path to the compiled assets manifest in the dist directory
 var revManifest = path.dist + 'assets.json';
+
+// Error checking; produce an error rather than crashing.
+var onError = function(err) {
+  console.log(err.toString());
+  this.emit('end');
+};
 
 // ## Reusable Pipelines
 // See https://github.com/OverZealous/lazypipe
@@ -177,6 +184,7 @@ gulp.task('styles', ['wiredep'], function() {
       });
     }
     merged.add(gulp.src(dep.globs, {base: 'styles'})
+      .pipe(plumber({errorHandler: onError}))
       .pipe(cssTasksInstance));
   });
   return merged
@@ -191,6 +199,7 @@ gulp.task('scripts', ['jshint'], function() {
   manifest.forEachDependency('js', function(dep) {
     merged.add(
       gulp.src(dep.globs, {base: 'scripts'})
+        .pipe(plumber({errorHandler: onError}))
         .pipe(jsTasks(dep.name))
     );
   });
@@ -212,13 +221,39 @@ gulp.task('fonts', function() {
 // `gulp images` - Run lossless compression on all the images.
 gulp.task('images', function() {
   return gulp.src(globs.images)
-    .pipe(imagemin({
-      progressive: true,
-      interlaced: true,
-      svgoPlugins: [{removeUnknownsAndDefaults: false}, {cleanupIDs: false}]
-    }))
+    .pipe(imagemin([
+      imagemin.jpegtran({progressive: true}),
+      imagemin.gifsicle({interlaced: true}),
+      imagemin.svgo({plugins: [{removeUnknownsAndDefaults: false}, {cleanupIDs: false}]})
+    ]))
     .pipe(gulp.dest(path.dist + 'images'))
     .pipe(browserSync.stream());
+});
+
+// ### Favicon
+// `gulp favicon` - Generate favicons
+gulp.task('favicon', function() {
+  return gulp.src('assets/favicon/favicon.png')
+    .pipe(favicons({
+      background: "#ffffff",
+      path: "favicons/",
+      version: 1.0,
+      logging: false,
+      online: false,
+      html: "index.html",
+      pipeHTML: true,
+      replace: true,
+      icons: {
+        android: true,              // Create Android homescreen icon. `boolean` or `{ offset, background, shadow }`
+        appleIcon: true,            // Create Apple touch icons. `boolean` or `{ offset, background }`
+        appleStartup: true,         // Create Apple startup images. `boolean` or `{ offset, background }`
+        favicons: true,             // Create regular favicons. `boolean`
+        firefox: true,              // Create Firefox OS icons. `boolean` or `{ offset, background }`
+        windows: true,              // Create Windows 8 tile icons. `boolean` or `{ background }`
+        yandex: false                // Create Yandex browser icon. `boolean` or `{ background }`
+      }
+    }))
+    .pipe(gulp.dest('favicons'))
 });
 
 // ### JSHint
@@ -245,8 +280,6 @@ gulp.task('clean', require('del').bind(null, [path.dist]));
 gulp.task('watch', function() {
   browserSync.init({
     files: ['{lib,templates}/**/*.php', '*.php'],
-    open: 'external',
-    host: config.devUrl,
     proxy: config.devUrl,
     snippetOptions: {
       whitelist: ['/wp-admin/admin-ajax.php'],
